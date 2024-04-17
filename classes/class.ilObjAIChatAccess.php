@@ -63,6 +63,7 @@ class ilObjAIChatAccess extends ilObjectPluginAccess
             " WHERE id = " . $ilDB->quote($a_id, "integer")
         );
         $rec = $ilDB->fetchAssoc($set);
+        
         return (boolean) $rec["is_online"];
     }
 

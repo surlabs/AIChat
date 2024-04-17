@@ -78,6 +78,7 @@ class ilAIChatConfig
         $row = $result->fetchAssoc();
         $record = $row['value_setting'];
 
+
         return (string)$record;
     }
 
