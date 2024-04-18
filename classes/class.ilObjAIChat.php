@@ -67,7 +67,7 @@ class ilObjAIChat extends ilObjectPlugin
         while ($rec = $ilDB->fetchAssoc($set)) {
             $this->setOnline($rec["is_online"] == "1");
             $this->setApiKey($rec["apikey"]);
-            $this->setDisclaimer($rec["disclaimer"]);
+            $this->setDisclaimer($rec["disclaimer"] ?: '');
         }
     }
 
