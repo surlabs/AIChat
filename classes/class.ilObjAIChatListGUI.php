@@ -59,6 +59,7 @@ class ilObjAIChatListGUI extends ilObjectPluginListGUI
                 "property" => $this->txt("status"),
                 "value" => $this->txt("offline")
             );
+
         }
 
         return $props;

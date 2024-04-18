@@ -56,6 +56,9 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
 
     public function performCommand(string $cmd) : void
     {
+        global $DIC;
+        $this->setTitleAndDescription();
+
         switch ($cmd) {
             case "editProperties":   // list all commands that need write permission here
             case "updateProperties":
@@ -174,17 +177,35 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
                 ));
             $formFields['online'] = $onlineCheckbox;
 
+            $disclaimerArea = self::$factory->input()->field()->textarea($this->plugin->txt("disclaimer"), '')
+                ->withValue($object->getDisclaimer())
+                ->withMaxLimit(5000)
+                ->withAdditionalTransformation($this->refinery->custom()->transformation(
+                    function ($v) use ($object) {
+                        $object->setDisclaimer($v);
+                    }
+                ));
+
+            $formFields['disclaimer'] = $disclaimerArea;
+
             $sectionObject = self::$factory->input()->field()->section($formFields, $this->plugin->txt("obj_xaic"), "");
 
             $sections["object"] = $sectionObject;
 
             if ($object instanceof ilObjAIChat && !$object->getUseGlobalApikey()) {
+
                 $sectionObject = self::$factory->input()->field()->section([
-                    "user_api_key" => self::$factory->input()->field()->text($this->plugin->txt("obj_apikey_input"), '')
+                    "user_api_key" => self::$factory->input()->field()->password($this->plugin->txt("obj_apikey_input"), '')
                         ->withValue($object->getApiKey() ? ilAIChatUtils::decode($object->getApiKey())->apikey : '')
                         ->withAdditionalTransformation($this->refinery->custom()->transformation(
                             function ($v) use ($object) {
-                                $object->setApiKey(ilAIChatUtils::encode(["apikey" => $v]));
+                                $reflectionClass = new ReflectionClass('ILIAS\Data\Password');
+                                $property = $reflectionClass->getProperty('pass');
+                                $property->setAccessible(true);
+                                $password = $property->getValue($v);
+
+                                $object->setApiKey(ilAIChatUtils::encode(["apikey" => $password]));
+
                             }
                         ))
                 ],$this->plugin->txt("api_key"), "");
@@ -270,6 +291,8 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
         $host = $_SERVER['HTTP_HOST'];
 
         $urlCompleta = $protocolo . "://" . $host;
+        $cmdNode = $_GET['cmdNode'];
+
 
         $DIC->globalScreen()->layout()->meta()->addJs('Customizing/global/plugins/Services/Repository/RepositoryObject/AIChat/templates/default/index.js');
         $tpl = new ilTemplate('index.html', true, true, "Customizing/global/plugins/Services/Repository/RepositoryObject/AIChat/");
@@ -277,8 +300,10 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
         $tpl->setVariable("CLEAR_TEXT", $this->plugin->txt("clear_chat"));
         $tpl->setVariable("ID", $this->object->getRefId());
         $tpl->setVariable("URL", $urlCompleta);
-        $this->tpl->setContent($tpl->get());
+        $tpl->setVariable("DISCLAIMER", $this->object->getDisclaimer());
+        $tpl->setVariable("CMD_NODE", $cmdNode);
 
+        $this->tpl->setContent($tpl->get());
 
     }
 
@@ -370,4 +395,6 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
             }
         }
     }
+
+
 }
