@@ -20,7 +20,7 @@
 
 $id = "xaic";
  
-$version = "1.0.4";
+$version = "1.1.0";
 
 $ilias_min_version = "8.0";
 $ilias_max_version = "8.999";
