@@ -141,7 +141,7 @@ class ilAIChatConfigGUI extends ilPluginConfigGUI
 
             $disclaimerArea = self::$factory->input()->field()->textarea($this->plugin_object->txt("disclaimer"), '')
                 ->withValue($disclaimer)
-                ->withMaxLimit(5000)
+                ->withMaxLimit(4000)
                 ->withAdditionalTransformation($DIC->refinery()->custom()->transformation(
                     function ($v) use ($object) {
                         $object->setValue('disclaimer', $v);
