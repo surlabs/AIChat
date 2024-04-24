@@ -26,7 +26,7 @@ class ilObjAIChat extends ilObjectPlugin
     protected bool $online = false;
     protected string $api_key = '';
     protected string $model = '';
-    protected string $disclaimer = '';
+//    protected string $disclaimer = '';
     private ilAIChatConfig $config;
 
 
@@ -47,10 +47,9 @@ class ilObjAIChat extends ilObjectPlugin
 
         $ilDB->manipulate(
             "INSERT INTO rep_robj_xaic_data " .
-            "(id, is_online, apikey, disclaimer) VALUES (" .
+            "(id, is_online, apikey) VALUES (" .
             $ilDB->quote($this->getId(), "integer") . "," .
             $ilDB->quote(0, "integer") . "," .
-            $ilDB->quote('', "text") . "," .
             $ilDB->quote('', "text") .
 
             ")"
@@ -67,7 +66,7 @@ class ilObjAIChat extends ilObjectPlugin
         while ($rec = $ilDB->fetchAssoc($set)) {
             $this->setOnline($rec["is_online"] == "1");
             $this->setApiKey($rec["apikey"]);
-            $this->setDisclaimer($rec["disclaimer"] ?: '');
+//            $this->setDisclaimer($rec["disclaimer"] ?: '');
         }
     }
 
@@ -79,7 +78,6 @@ class ilObjAIChat extends ilObjectPlugin
             $up = "UPDATE rep_robj_xaic_data SET " .
                 " is_online = " . $ilDB->quote($this->isOnline(), "integer") .
                 ", apikey = " . $ilDB->quote($this->getApiKey(), "text") .
-                ", disclaimer = " . $ilDB->quote($this->getDisclaimer(), "text") .
                 " WHERE id = " . $ilDB->quote($this->getId(), "integer")
         );
     }
@@ -199,15 +197,15 @@ class ilObjAIChat extends ilObjectPlugin
         return $this->online;
     }
 
-    public function getDisclaimer(): string
-    {
-        return $this->disclaimer;
-    }
-
-    public function setDisclaimer(string $disclaimer): void
-    {
-        $this->disclaimer = $disclaimer;
-    }
+//    public function getDisclaimer(): string
+//    {
+//        return $this->disclaimer;
+//    }
+//
+//    public function setDisclaimer(string $disclaimer): void
+//    {
+//        $this->disclaimer = $disclaimer;
+//    }
 
     public function getApiKey(): string
     {
@@ -227,18 +225,8 @@ class ilObjAIChat extends ilObjectPlugin
         return $this->config->getValue('model');
     }
 
-    public function setModel(string $model): void
-    {
-        $this->model = $model;
-    }
-
     public function getConfig(): ilAIChatConfig
     {
         return $this->config;
-    }
-
-    public function setConfig(ilAIChatConfig $config): void
-    {
-        $this->config = $config;
     }
 }

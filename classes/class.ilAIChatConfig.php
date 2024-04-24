@@ -25,12 +25,17 @@ class ilAIChatConfig
     protected bool $use_global_apikey = false;
     protected string $api_key = '';
     protected string $model = 'gpt-4';
+    protected string $disclaimer = '';
 
     public function setValue($key, $value): void
     {
         global $DIC;
 
         $ilDB = $DIC['ilDB'];
+
+        if($key == 'global_apikey'){
+            $value = $value ? "true" : "false";
+        }
 
         if (!is_string($this->getValue($key))) {
             $ilDB->insert(
@@ -50,13 +55,16 @@ class ilAIChatConfig
 
         switch ($key):
             case 'global_apikey':
-                $this->setUseGlobalApikey($value);
+                $this->setUseGlobalApikey($value == "true");
                 break;
             case 'apikey':
                 $this->setApikey($value);
                 break;
             case 'model':
                 $this->setModel($value);
+                break;
+            case 'disclaimer':
+                $this->setDisclaimer($value);
                 break;
         endswitch;
     }
@@ -110,5 +118,15 @@ class ilAIChatConfig
     public function setModel(string $model): void
     {
         $this->model = $model;
+    }
+
+    public function getDisclaimer(): string
+    {
+        return $this->disclaimer;
+    }
+
+    public function setDisclaimer(string $disclaimer): void
+    {
+        $this->disclaimer = $disclaimer;
     }
 }

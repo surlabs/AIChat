@@ -177,16 +177,16 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
                 ));
             $formFields['online'] = $onlineCheckbox;
 
-            $disclaimerArea = self::$factory->input()->field()->textarea($this->plugin->txt("disclaimer"), '')
-                ->withValue($object->getDisclaimer())
-                ->withMaxLimit(5000)
-                ->withAdditionalTransformation($this->refinery->custom()->transformation(
-                    function ($v) use ($object) {
-                        $object->setDisclaimer($v);
-                    }
-                ));
-
-            $formFields['disclaimer'] = $disclaimerArea;
+//            $disclaimerArea = self::$factory->input()->field()->textarea($this->plugin->txt("disclaimer"), '')
+//                ->withValue($object->getDisclaimer())
+//                ->withMaxLimit(5000)
+//                ->withAdditionalTransformation($this->refinery->custom()->transformation(
+//                    function ($v) use ($object) {
+//                        $object->setDisclaimer($v);
+//                    }
+//                ));
+//
+//            $formFields['disclaimer'] = $disclaimerArea;
 
             $sectionObject = self::$factory->input()->field()->section($formFields, $this->plugin->txt("obj_xaic"), "");
 
@@ -286,21 +286,22 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
 
         global $DIC;
 
+
+
         $protocolo = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 
         $host = $_SERVER['HTTP_HOST'];
 
-        $urlCompleta = $protocolo . "://" . $host;
+        $fullURL = $protocolo . "://" . $host;
         $cmdNode = $_GET['cmdNode'];
-
 
         $DIC->globalScreen()->layout()->meta()->addJs('Customizing/global/plugins/Services/Repository/RepositoryObject/AIChat/templates/default/index.js');
         $tpl = new ilTemplate('index.html', true, true, "Customizing/global/plugins/Services/Repository/RepositoryObject/AIChat/");
 
         $tpl->setVariable("CLEAR_TEXT", $this->plugin->txt("clear_chat"));
         $tpl->setVariable("ID", $this->object->getRefId());
-        $tpl->setVariable("URL", $urlCompleta);
-        $tpl->setVariable("DISCLAIMER", $this->object->getDisclaimer());
+        $tpl->setVariable("URL", $fullURL);
+        $tpl->setVariable("DISCLAIMER", $this->object->getConfig()->getValue('disclaimer'));
         $tpl->setVariable("CMD_NODE", $cmdNode);
 
         $this->tpl->setContent($tpl->get());
