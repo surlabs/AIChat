@@ -199,11 +199,11 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
                         ->withValue($object->getApiKey() ? ilAIChatUtils::decode($object->getApiKey())->apikey : '')
                         ->withAdditionalTransformation($this->refinery->custom()->transformation(
                             function ($v) use ($object) {
+
                                 $reflectionClass = new ReflectionClass('ILIAS\Data\Password');
                                 $property = $reflectionClass->getProperty('pass');
                                 $property->setAccessible(true);
                                 $password = $property->getValue($v);
-
                                 $object->setApiKey(ilAIChatUtils::encode(["apikey" => $password]));
 
                             }
@@ -243,18 +243,17 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
             $form = $form->withRequest($request);
             $result = $form->getData();
             if($result){
-                $saving_info = $this->saveProperties($result);
+                $saving_info = $this->saveProperties();
             }
         }
 
         return $saving_info . $this->renderer->render($form);
     }
 
-    protected function saveProperties(array $data) : string
+    protected function saveProperties() : string
     {
         GLOBAL $DIC;
         $renderer = $DIC->ui()->renderer();
-
         $this->object->update();
 
         return $renderer->render(self::$factory->messageBox()->success($this->plugin->txt('info_config_saved')));

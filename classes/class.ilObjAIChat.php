@@ -63,6 +63,7 @@ class ilObjAIChat extends ilObjectPlugin
             "SELECT * FROM rep_robj_xaic_data " .
             " WHERE id = " . $ilDB->quote($this->getId(), "integer")
         );
+
         while ($rec = $ilDB->fetchAssoc($set)) {
             $this->setOnline($rec["is_online"] == "1");
             $this->setApiKey($rec["apikey"]);
@@ -74,6 +75,7 @@ class ilObjAIChat extends ilObjectPlugin
     {
         global $ilDB;
 
+        $this->getApiKey();
         $ilDB->manipulate(
             $up = "UPDATE rep_robj_xaic_data SET " .
                 " is_online = " . $ilDB->quote($this->isOnline(), "integer") .
@@ -209,9 +211,11 @@ class ilObjAIChat extends ilObjectPlugin
 
     public function getApiKey(): string
     {
-        if ($this->config->getValue('global_apikey')) {
+        if ($this->config->getValue('global_apikey') == "true") {
+
             return $this->config->getValue('apikey');
         }
+
         return $this->api_key;
     }
 
