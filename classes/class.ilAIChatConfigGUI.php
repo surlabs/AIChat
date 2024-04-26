@@ -121,7 +121,9 @@ class ilAIChatConfigGUI extends ilPluginConfigGUI
 
                     }
                 ));
-            if ($object->getValue('global_apikey') == "0") {
+
+
+            if ($object->getValue('global_apikey') != "true") {
                 $field = $field->withValue(null);
             }
 

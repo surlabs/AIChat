@@ -192,6 +192,7 @@ class ilObjAIChatGUI extends ilObjectPluginGUI
 
             $sections["object"] = $sectionObject;
 
+
             if ($object instanceof ilObjAIChat && !$object->getUseGlobalApikey()) {
 
                 $sectionObject = self::$factory->input()->field()->section([
